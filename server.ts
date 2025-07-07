@@ -1,7 +1,12 @@
+interface WordsData {
+  [key: string]: string[];
+}
+
 // Імпортуємо необхідні модулі
 import express from "express"; // Express — фреймворк для створення сервера
 import cors from "cors";       // CORS — для дозволу запитів з інших доменів (наприклад, з клієнта)
-import wordsData from "./data/words.json"; // Імпортуємо JSON з підказками на різних мовах
+import wordsDataJson from "./data/words.json"; // Імпортуємо JSON з підказками на різних мовах
+const wordsData = wordsDataJson as WordsData;
 
 // Ініціалізуємо додаток Express
 const app = express();
