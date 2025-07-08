@@ -1,18 +1,22 @@
 {
   "compilerOptions": {
+    "target": "ES2020",                       // Краще, ніж ES6, для сучасного Node
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
-    "removeComments": true,
-    "sourceMap": true,
+    "lib": ["DOM", "ES2020"],                // Оновлений стандарт бібліотек
     "outDir": "./dist",
+    "sourceMap": true,
+    "removeComments": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "target": "ES6",
-    "resolveJsonModule": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
-    "lib": ["DOM","ES2015"]
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["@vercel/node"]                // 👈 Додає підтримку типів від Vercel
   },
-  "include": ["./src/**/*"],
+  "include": [
+    "./src/**/*",                            // Код проекту
+    "./api/**/*"                             // 👈 Додати директорію з Vercel Functions
+  ],
   "exclude": ["node_modules"]
 }

@@ -1,197 +1,45 @@
-// Shopping List app with suggestions and localStorage — TypeScript version
-// -----------------------------------------------------------------------
-// • Показує підказки (autocomplete) для різних мов
-// • Зберігає список покупок у localStorage
-// • Перевіряє на дублікати
-// • Нумерує пункти автоматично
-// • Дозволяє видаляти елементи
-// -----------------------------------------------------------------------
-
-// --------------------------------------------------
-// Тип даних одного пункту списку
-// --------------------------------------------------
-interface ShoppingItem {
-  title: string; // назва товару
-  done: boolean; // чи куплено (можна розширити у майбутньому)
+// 🔹 Тип для структури слів у JSON
+interface WordsData {
+  [key: string]: string[];
 }
 
-// --------------------------------------------------
-// Основні елементи DOM
-// --------------------------------------------------
-const form = document.querySelector('.form') as HTMLFormElement;
-const input = document.getElementById('actionInput') as HTMLInputElement;
-const countButton = document.querySelector('.count') as HTMLButtonElement;
-const listSection = document.querySelector('.list') as HTMLElement;
-const langSelect = document.getElementById('langSelect') as HTMLSelectElement; // <select> мови
+// 🔹 Імпортуємо необхідні модулі
+import express from "express";               // Express — фреймворк для створення сервера
+import cors from "cors";                     // CORS — для дозволу запитів з інших доменів
+import wordsDataJson from "../data/words.json"; // Імпортуємо JSON із підказками на різних мовах
 
-// --------------------------------------------------
-// Контейнер для автопідказок під полем вводу
-// --------------------------------------------------
-const suggestionsContainer = document.createElement('ul');
-suggestionsContainer.className = 'suggestionsList';
-// Додаємо підказки безпосередньо під <input>
-input.parentElement!.appendChild(suggestionsContainer);
+// 🔹 Приводимо JSON до типу WordsData
+const wordsData = wordsDataJson as WordsData;
 
-// --------------------------------------------------
-// Список покупок (<ul>) всередині секції .list
-// --------------------------------------------------
-const ul = document.createElement('ul');
-ul.className = 'shopingList';
-listSection.appendChild(ul);
+// 🔹 Ініціалізуємо додаток Express
+const app = express();
+const port = 3000; // Порт, на якому запускатиметься сервер
 
-// --------------------------------------------------
-// Відновлення збережених даних із localStorage
-// --------------------------------------------------
-const savedItems = JSON.parse(localStorage.getItem('shoppingList') || '[]') as ShoppingItem[];
-savedItems.forEach(item => addItem(item.title, false));
+// 🔹 Дозволяємо крос-доменні запити
+app.use(cors());
 
-// --------------------------------------------------
-// 1) Обробка вводу: надсилаємо запит за підказками
-// --------------------------------------------------
-input.addEventListener('input', async () => {
-  const query = input.value.toLowerCase().trim();
-  const lang = langSelect.value; // обрана мова
+/**
+ * 🔹 Роут для обробки автопідказок.
+ * Очікує два параметри:
+ *  - query: текст, який вводить користувач
+ *  - lang: мова (наприклад, 'uk', 'en', 'pl', 'ru')
+ */
+app.get("/api/suggestions", (req, res) => {
+  const query = (req.query.query as string)?.toLowerCase() || ""; // Отримуємо текст запиту
+  const lang = (req.query.lang as string) || "uk";                // Отримуємо мову запиту (за замовчуванням — 'uk')
 
-  if (!query) {
-    // Порожній рядок → очищаємо підказки
-    suggestionsContainer.innerHTML = '';
-    return;
-  }
+  const langWords = wordsData[lang] || []; // Список слів для обраної мови
+  const result = langWords.filter((word: string) =>
+    word.toLowerCase().startsWith(query)
+  ); // Фільтруємо слова за введеним запитом
 
-  try {
-    // Запит до нашого API з урахуванням мови
-    const response = await fetch(
-      `http://localhost:3000/api/suggestions?query=${encodeURIComponent(query)}&lang=${lang}`
-    );
-    if (!response.ok) throw new Error('Network error');
-
-    const suggestions: string[] = await response.json();
-    suggestionsContainer.innerHTML = '';
-
-    // Відмалювати кожну підказку як <li>
-    suggestions.forEach(suggestion => {
-      const li = document.createElement('li');
-      li.textContent = suggestion;
-      li.className = 'suggestionItem';
-
-      // При кліку переносимо текст у поле вводу
-      li.addEventListener('click', () => {
-        input.value = suggestion;
-        suggestionsContainer.innerHTML = '';
-        input.focus();
-      });
-
-      suggestionsContainer.appendChild(li);
-    });
-  } catch (error) {
-    console.error('Error fetching suggestions:', error);
-    suggestionsContainer.innerHTML = '';
-  }
+  res.json(result); // Повертаємо результат у форматі JSON
 });
 
-// --------------------------------------------------
-// 2) Обробка форми <form> (додавання нового пункту)
-// --------------------------------------------------
-form.addEventListener('submit', event => {
-  event.preventDefault();
-  const text = input.value.trim();
-
-  if (text === '') {
-    alert('Type text please');
-    return;
-  }
-
-  // Перевірка на дублікати (беремо лише текстовий вузол, індекс 1)
-  const duplicateExists = Array.from(ul.querySelectorAll('li')).some(li => {
-    const content = li.childNodes[1]?.textContent?.trim().toLowerCase();
-    return content === text.toLowerCase();
-  });
-
-  if (duplicateExists) {
-    alert('This item already exists in the list!');
-    return;
-  }
-
-  addItem(text, true); // true → треба зберегти у localStorage
-  input.value = '';
-  suggestionsContainer.innerHTML = '';
-  input.focus();
+// 🔹 Запускаємо сервер
+app.listen(port, () => {
+  console.log(`✅ Сервер запущено на http://localhost:${port}`);
 });
-
-// --------------------------------------------------
-// 3) Додавання пункту до списку
-// --------------------------------------------------
-function addItem(title: string, save: boolean): void {
-  const li = document.createElement('li');
-  li.className = 'shopingItem';
-
-  // Кнопка з номером (заповнюється в updateAllNumbers)
-  const numberBtn = document.createElement('button');
-  numberBtn.className = 'numberBtn';
-
-  // Кнопка видалення "X"
-  const deleteBtn = document.createElement('button');
-  deleteBtn.textContent = 'X';
-  deleteBtn.className = 'deleteBtn';
-
-  // Видалення елемента
-  deleteBtn.addEventListener('click', () => {
-    ul.removeChild(li);
-    updateAllNumbers();
-    updateCounter();
-    saveToLocalStorage();
-  });
-
-  // Формуємо <li>: [номер] назва  [X]
-  li.appendChild(numberBtn);
-  li.appendChild(document.createTextNode(' ' + title));
-  li.appendChild(deleteBtn);
-  ul.appendChild(li);
-
-  updateAllNumbers();
-  updateCounter();
-
-  if (save) saveToLocalStorage();
-}
-
-// --------------------------------------------------
-// 4) Оновлення номерів біля кожного пункту
-// --------------------------------------------------
-function updateAllNumbers(): void {
-  const items = ul.querySelectorAll('li');
-  items.forEach((li, index) => {
-    const numberBtn = li.querySelector('.numberBtn') as HTMLButtonElement;
-    numberBtn.textContent = (index + 1).toString();
-  });
-}
-
-// --------------------------------------------------
-// 5) Оновлення глобального лічильника (кнопка count)
-// --------------------------------------------------
-function updateCounter(): void {
-  const totalItems = ul.querySelectorAll('li').length;
-  countButton.textContent = totalItems.toString();
-}
-
-// --------------------------------------------------
-// 6) Зберегти поточний список у localStorage
-// --------------------------------------------------
-function saveToLocalStorage(): void {
-  const items: ShoppingItem[] = Array.from(ul.querySelectorAll('li')).map(li => {
-    const title = li.childNodes[1]?.textContent?.trim() ?? '';
-    return { title, done: false };
-  });
-  localStorage.setItem('shoppingList', JSON.stringify(items));
-}
-
-// --------------------------------------------------
-// 7) Футер із поточним роком
-// --------------------------------------------------
-const footerTitle = document.querySelector('.footerTitle') as HTMLElement;
-const p = document.createElement('p');
-p.className = 'date';
-p.textContent = `© ${new Date().getFullYear()} Created by Maryna Arnaut`;
-footerTitle.appendChild(p);
 
 
 
