@@ -61,9 +61,7 @@ input.addEventListener('input', async () => {
 
   try {
     // Запит до нашого API з урахуванням мови
-    const response = await fetch(
-      `http://localhost:3000/api/suggestions?query=${encodeURIComponent(query)}&lang=${lang}`
-    );
+    const response = await fetch(`/api/suggestions?query=${encodeURIComponent(query)}&lang=${lang}`);
     if (!response.ok) throw new Error('Network error');
 
     const suggestions: string[] = await response.json();
