@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["DOM", "ES2020"],                // Оновлений стандарт бібліотек
-    "outDir": "./dist",
+    "outDir": "api/public/dist",
     "sourceMap": true,
     "removeComments": true,
     "strict": true,
