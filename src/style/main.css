@@ -133,6 +133,10 @@ margin: 0 1.87rem 3.06rem 1.43rem;
 .suggestionItem:hover {
   background-color: #eee;
 }
+.shopingItem.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
 
 @media screen and (max-width: 649px) {
    .imageBlock{

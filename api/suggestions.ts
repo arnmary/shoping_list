@@ -1,28 +1,40 @@
-// 🔹 Імпорт типів для функцій у Vercel
 import { VercelRequest, VercelResponse } from '@vercel/node';
-
-// 🔹 Імпортуємо список слів із JSON
 import wordsData from '../data/words.json';
 
-// 🔹 Обмежуємо допустимі коди мов
+type WordsData = {
+  [key: string]: string[];
+};
+
 type LangCode = 'uk' | 'ru' | 'en' | 'pl';
 
-/**
- * 🔹 Основний обробник запиту до /api/suggestions
- *    - Очікує параметри query (текст) і lang (код мови)
- */
+// Приведемо імпортовані дані до типу WordsData
+const typedWordsData: WordsData = wordsData;
+
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  const query = (req.query.query as string)?.toLowerCase() || ''; // Отримуємо текст запиту
-  const lang = (req.query.lang as LangCode) || 'uk';              // Отримуємо мову запиту
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  const langWords = wordsData[lang] || []; // Отримуємо список слів відповідної мови
+  const queryParam = req.query.query;
+  const langParam = req.query.lang;
 
-  // 🔸 Фільтруємо слова, що починаються з введеного тексту
-  const result = langWords.filter(word =>
+  if (!queryParam || typeof queryParam !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid query parameter' });
+  }
+
+  const query = queryParam.toLowerCase().trim();
+  const lang = (typeof langParam === 'string' ? langParam : 'uk') as LangCode;
+
+  if (!typedWordsData[lang]) {
+    return res.status(400).json({ error: 'Language not supported' });
+  }
+
+  const langWords = typedWordsData[lang];
+
+  const suggestions = langWords.filter(word =>
     word.toLowerCase().startsWith(query)
   );
 
-  // 🔸 Повертаємо результат як JSON
-  res.status(200).json(result);
+  return res.status(200).json(suggestions);
 }
 
