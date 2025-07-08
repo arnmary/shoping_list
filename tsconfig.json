@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["@vercel/node"]                // 👈 Додає підтримку типів від Vercel
+             
   },
   "include": [
     "./src/**/*",                            // Код проекту
