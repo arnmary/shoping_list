@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["DOM", "ES2020"],                // Оновлений стандарт бібліотек
-    "outDir": "api/public/dist",
+    "outDir": "public/dist",
     "sourceMap": true,
     "removeComments": true,
     "strict": true,
@@ -17,6 +17,6 @@
   "include": [
     "./src/**/*",                            // Код проекту
     "./api/**/*"                             // 👈 Додати директорію з Vercel Functions
-, "public/index.ts"  ],
+, "src/index.ts"  ],
   "exclude": ["node_modules"]
 }
