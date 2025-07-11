@@ -4,12 +4,9 @@
     "api/suggestions.ts": {
       "includeFiles": "data/words.json"
     }
-  },
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1.ts" },
-    { "src": "/(.*)", "dest": "/public/$1" }
-  ]
+  }
 }
+
 
 
 

@@ -18,7 +18,7 @@
     "./src/**/*",                            // Код проекту
     "./api/**/*",
   "./data/**/*",                           // 👈 Додати директорію з Vercel Functions
-  "src/index.ts"  ],
+  "public/index.ts", "public/server.ts"  ],
 
   "exclude": ["node_modules"]
 }
