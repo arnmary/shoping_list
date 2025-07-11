@@ -1,33 +1,49 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shoping list</title>
-    <link rel="stylesheet" href="/public/reset.css">
-    <link rel="stylesheet" href="/public/main.css">
-    
+    <title>Shopping List</title>
+
+      <!-- CSS -->
+  <link rel="stylesheet" href="/public/reset.css" />
+  <link rel="stylesheet" href="/public/main.css" />
 </head>
 <body>
-    <div class="content">
-        <div class="listFlex">
-        <section class="list">
-       <h1 class="mainTitle">Shoping List</h1>
-<form action="" class="form">
-  <input type="text" id="actionInput" name="action" placeholder="Title..." />
 
-  <button type="button" class="count">0</button>
-  <button type="submit" class="addBtn">Add</button>
-</form>
-        </section>
-    <section class="imageBlock">
-<img src="./images/image1.png" alt="Vector image">
-    </section> 
-        </div>
+   <div class="content">
+    <div class="listFlex">
+      <section class="list">
+        <h1 class="mainTitle">Shopping List</h1>
+
+        <!-- Language selector (if used by TS logic) -->
+      <select id="langSelect" aria-label="Choose language">
+          <option value="en">En</option>
+          <option value="uk">Uk</option>
+           <option value="uk">Ru</option>
+            <option value="uk">Pl</option>
+     </select>
+
+        <form class="form">
+          <input type="text" id="actionInput" name="action" placeholder="Title..." />
+          <button type="button" class="count">0</button>
+          <button type="submit" class="addBtn">Add</button>
+        </form>
+
+        <!-- Container for suggestions -->
+        <ul id="suggestions" class="suggestionsList"></ul>
+      </section>
+
+      <section class="imageBlock">
+        <img src="/public/image1.png" alt="Vector image" />
+      </section>
     </div>
-  <footer class="footerTitle">
-  </footer>
+  </div>
 
-   <script src="/public/dist/src/index.js" defer></script>
+  <footer class="footerTitle"></footer>
+
+  <!-- JS (compiled output) -->
+  <script src="/public/dist/index.js" defer></script>  
 </body>
 </html>

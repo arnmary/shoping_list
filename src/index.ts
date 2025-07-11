@@ -1,79 +1,54 @@
-// Shopping List app with suggestions and localStorage — TypeScript version
-// -----------------------------------------------------------------------
-// • Показує підказки (autocomplete) для різних мов
-// • Зберігає список покупок у localStorage
-// • Перевіряє на дублікати
-// • Нумерує пункти автоматично
-// • Дозволяє видаляти елементи
-// -----------------------------------------------------------------------
+// -----------------------------
+// Shopping List with Autocomplete
+// -----------------------------
 
-// --------------------------------------------------
-// Тип даних одного пункту списку
-// --------------------------------------------------
 interface ShoppingItem {
-  title: string; // назва товару
-  done: boolean; // чи куплено (можна розширити у майбутньому)
+  title: string;
+  done: boolean;
 }
 
-// --------------------------------------------------
-// Основні елементи DOM
-// --------------------------------------------------
+// DOM елементи
 const form = document.querySelector('.form') as HTMLFormElement;
 const input = document.getElementById('actionInput') as HTMLInputElement;
 const countButton = document.querySelector('.count') as HTMLButtonElement;
 const listSection = document.querySelector('.list') as HTMLElement;
-const langSelect = document.getElementById('langSelect') as HTMLSelectElement; // <select> мови
+const langSelect = document.getElementById('langSelect') as HTMLSelectElement;
+const suggestionsContainer = document.getElementById('suggestions') as HTMLUListElement;
+const footerTitle = document.querySelector('.footerTitle') as HTMLElement;
 
-// --------------------------------------------------
-// Контейнер для автопідказок під полем вводу
-// --------------------------------------------------
-const suggestionsContainer = document.createElement('ul');
-suggestionsContainer.className = 'suggestionsList';
-// Додаємо підказки безпосередньо під <input>
-input.parentElement!.appendChild(suggestionsContainer);
-
-// --------------------------------------------------
-// Список покупок (<ul>) всередині секції .list
-// --------------------------------------------------
+// Список покупок
 const ul = document.createElement('ul');
 ul.className = 'shopingList';
 listSection.appendChild(ul);
 
-// --------------------------------------------------
-// Відновлення збережених даних із localStorage
-// --------------------------------------------------
+// Відновлення зі сховища
 const savedItems = JSON.parse(localStorage.getItem('shoppingList') || '[]') as ShoppingItem[];
 savedItems.forEach(item => addItem(item.title, false, item.done));
 
-
-// --------------------------------------------------
-// 1) Обробка вводу: надсилаємо запит за підказками
-// --------------------------------------------------
+// -----------------------------
+// Обробка підказок
+// -----------------------------
 input.addEventListener('input', async () => {
   const query = input.value.toLowerCase().trim();
-  const lang = langSelect.value; // обрана мова
+  const lang = langSelect.value;
 
   if (!query) {
-    // Порожній рядок → очищаємо підказки
     suggestionsContainer.innerHTML = '';
     return;
   }
 
   try {
-    // Запит до нашого API з урахуванням мови
     const response = await fetch(`/api/suggestions?query=${encodeURIComponent(query)}&lang=${lang}`);
     if (!response.ok) throw new Error('Network error');
 
     const suggestions: string[] = await response.json();
     suggestionsContainer.innerHTML = '';
 
-    // Відмалювати кожну підказку як <li>
     suggestions.forEach(suggestion => {
       const li = document.createElement('li');
       li.textContent = suggestion;
       li.className = 'suggestionItem';
 
-      // При кліку переносимо текст у поле вводу
       li.addEventListener('click', () => {
         input.value = suggestion;
         suggestionsContainer.innerHTML = '';
@@ -88,9 +63,9 @@ input.addEventListener('input', async () => {
   }
 });
 
-// --------------------------------------------------
-// 2) Обробка форми <form> (додавання нового пункту)
-// --------------------------------------------------
+// -----------------------------
+// Обробка додавання елементу
+// -----------------------------
 form.addEventListener('submit', event => {
   event.preventDefault();
   const text = input.value.trim();
@@ -100,9 +75,8 @@ form.addEventListener('submit', event => {
     return;
   }
 
-  // Перевірка на дублікати (беремо лише текстовий вузол, індекс 1)
   const duplicateExists = Array.from(ul.querySelectorAll('li')).some(li => {
-  const content = li.textContent?.replace(/^(\d+)?\s*|\s*X$/g, '').trim().toLowerCase();
+    const content = li.textContent?.replace(/^(\d+)?\s*|\s*X$/g, '').trim().toLowerCase();
     return content === text.toLowerCase();
   });
 
@@ -111,44 +85,35 @@ form.addEventListener('submit', event => {
     return;
   }
 
-  addItem(text, true); // true → треба зберегти у localStorage
+  addItem(text, true);
   input.value = '';
   suggestionsContainer.innerHTML = '';
   input.focus();
 });
 
-// --------------------------------------------------
-// 3) Додавання пункту до списку
-// --------------------------------------------------
+// -----------------------------
+// Додавання елемента до списку
+// -----------------------------
 function addItem(title: string, save: boolean, done = false): void {
   const li = document.createElement('li');
   li.className = 'shopingItem';
   if (done) li.classList.add('done');
 
-  // Кнопка з номером (заповнюється в updateAllNumbers)
   const numberBtn = document.createElement('button');
   numberBtn.className = 'numberBtn';
-  
-  // ✅ Чекбокс "куплено"
+
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.className = 'buyCheckbox';
   checkbox.checked = done;
-
   checkbox.addEventListener('change', () => {
     li.classList.toggle('done', checkbox.checked);
-    saveToLocalStorage(); // зберегти статус
+    saveToLocalStorage();
   });
-  // Кнопка видалення "X"
-  // const deleteBtn = document.createElement('button');
-  // deleteBtn.textContent = 'X';
-  // deleteBtn.className = 'deleteBtn';
 
-  // Видалення елемента
-   const deleteBtn = document.createElement('button');
+  const deleteBtn = document.createElement('button');
   deleteBtn.textContent = 'X';
   deleteBtn.className = 'deleteBtn';
-
   deleteBtn.addEventListener('click', () => {
     ul.removeChild(li);
     updateAllNumbers();
@@ -156,7 +121,6 @@ function addItem(title: string, save: boolean, done = false): void {
     saveToLocalStorage();
   });
 
-  // Формуємо <li>: [номер] [✓] назва [X]
   li.appendChild(numberBtn);
   li.appendChild(checkbox);
   li.appendChild(document.createTextNode(' ' + title));
@@ -165,13 +129,12 @@ function addItem(title: string, save: boolean, done = false): void {
 
   updateAllNumbers();
   updateCounter();
-
   if (save) saveToLocalStorage();
 }
 
-// --------------------------------------------------
-// 4) Оновлення номерів біля кожного пункту
-// --------------------------------------------------
+// -----------------------------
+// Оновлення нумерації
+// -----------------------------
 function updateAllNumbers(): void {
   const items = ul.querySelectorAll('li');
   items.forEach((li, index) => {
@@ -180,17 +143,17 @@ function updateAllNumbers(): void {
   });
 }
 
-// --------------------------------------------------
-// 5) Оновлення глобального лічильника (кнопка count)
-// --------------------------------------------------
+// -----------------------------
+// Оновлення лічильника
+// -----------------------------
 function updateCounter(): void {
   const totalItems = ul.querySelectorAll('li').length;
   countButton.textContent = totalItems.toString();
 }
 
-// --------------------------------------------------
-// 6) Зберегти поточний список у localStorage
-// --------------------------------------------------
+// -----------------------------
+// Збереження в localStorage
+// -----------------------------
 function saveToLocalStorage(): void {
   const items: ShoppingItem[] = Array.from(ul.querySelectorAll('li')).map(li => {
     const title = li.childNodes[2]?.textContent?.trim() ?? '';
@@ -200,20 +163,10 @@ function saveToLocalStorage(): void {
   localStorage.setItem('shoppingList', JSON.stringify(items));
 }
 
-// --------------------------------------------------
-// 7) Футер із поточним роком
-// --------------------------------------------------
-const footerTitle = document.querySelector('.footerTitle') as HTMLElement;
+// -----------------------------
+// Футер
+// -----------------------------
 const p = document.createElement('p');
 p.className = 'date';
 p.textContent = `© ${new Date().getFullYear()} Created by Maryna Arnaut`;
 footerTitle.appendChild(p);
-
-
-
-
-
-
-
-
-

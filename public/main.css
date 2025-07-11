@@ -137,6 +137,11 @@ margin: 0 1.87rem 3.06rem 1.43rem;
   text-decoration: line-through;
   opacity: 0.6;
 }
+#langSelect{
+    margin-left: 22px;
+    margin-bottom: 10px;
+    background-color: #a8b0ff;
+}
 
 @media screen and (max-width: 649px) {
    .imageBlock{

@@ -4,7 +4,8 @@
   "description": "Shopping list app",
   "main": "index.js",
   "scripts": {
-    "start": "tsc -w"
+    "start": "tsc -w",
+     "postbuild": "cp src/js/index.js public/index.js && cp src/main.css public/main.css"
   },
   "repository": {
     "type": "git",

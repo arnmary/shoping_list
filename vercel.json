@@ -1,13 +1,15 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/**/*.ts", "use": "@vercel/node" },
-
-  ],
+  "functions": {
+    "api/suggestions.ts": {
+      "includeFiles": "data/words.json"
+    }
+  },
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1.ts" },
-
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
+
 
 
