@@ -20,6 +20,7 @@ body{
 }
 .list{
     width: 50%;
+    height: fit-content;
     margin: 3.62rem  7.75rem;
     background: linear-gradient(
     #0b0a0a,   
@@ -141,6 +142,17 @@ margin: 0 1.87rem 3.06rem 1.43rem;
     margin-left: 22px;
     margin-bottom: 10px;
     background-color: #a8b0ff;
+    color: #4d4545;;
+}
+#clearButton{
+    background-color: #FFD700;
+    color: #4d4545;;
+    margin-bottom: 2%;
+    margin-left: 81% ;
+    margin-right: 6%;
+    padding: 1%;
+    border: none;
+    border-radius: 3%;
 }
 
 @media screen and (max-width: 649px) {

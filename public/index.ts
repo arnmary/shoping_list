@@ -7,7 +7,7 @@ interface ShoppingItem {
   done: boolean;
 }
 
-// DOM елементи
+// DOM elements
 const form = document.querySelector('.form') as HTMLFormElement;
 const input = document.getElementById('actionInput') as HTMLInputElement;
 const countButton = document.querySelector('.count') as HTMLButtonElement;
@@ -16,17 +16,17 @@ const langSelect = document.getElementById('langSelect') as HTMLSelectElement;
 const suggestionsContainer = document.getElementById('suggestions') as HTMLUListElement;
 const footerTitle = document.querySelector('.footerTitle') as HTMLElement;
 
-// Список покупок
+// Shoping list
 const ul = document.createElement('ul');
-ul.className = 'shopingList';
+ul.className = 'shoppingList';
 listSection.appendChild(ul);
 
-// Відновлення зі сховища
+// Updating from the storage
 const savedItems = JSON.parse(localStorage.getItem('shoppingList') || '[]') as ShoppingItem[];
 savedItems.forEach(item => addItem(item.title, false, item.done));
 
 // -----------------------------
-// Обробка підказок
+//Handel hints
 // -----------------------------
 input.addEventListener('input', async () => {
   const query = input.value.toLowerCase().trim();
@@ -64,7 +64,7 @@ input.addEventListener('input', async () => {
 });
 
 // -----------------------------
-// Обробка додавання елементу
+//Handel adding element
 // -----------------------------
 form.addEventListener('submit', event => {
   event.preventDefault();
@@ -92,11 +92,11 @@ form.addEventListener('submit', event => {
 });
 
 // -----------------------------
-// Додавання елемента до списку
+// Adding element to the list
 // -----------------------------
 function addItem(title: string, save: boolean, done = false): void {
   const li = document.createElement('li');
-  li.className = 'shopingItem';
+  li.className = 'shoppingItem';
   if (done) li.classList.add('done');
 
   const numberBtn = document.createElement('button');
@@ -133,7 +133,7 @@ function addItem(title: string, save: boolean, done = false): void {
 }
 
 // -----------------------------
-// Оновлення нумерації
+// Updating numbering
 // -----------------------------
 function updateAllNumbers(): void {
   const items = ul.querySelectorAll('li');
@@ -142,9 +142,26 @@ function updateAllNumbers(): void {
     numberBtn.textContent = (index + 1).toString();
   });
 }
+// -----------------------------
+// Clear list
+// -----------------------------
+const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
+
+if (clearButton) {
+  clearButton.addEventListener('click', () => {
+    ul.innerHTML = '';
+    localStorage.removeItem('shoppingList');
+    updateCounter();
+    suggestionsContainer.innerHTML = '';
+  });
+} else {
+  console.warn('❗ clearButton not found in the DOM');
+}
+
+
 
 // -----------------------------
-// Оновлення лічильника
+// Updating counter
 // -----------------------------
 function updateCounter(): void {
   const totalItems = ul.querySelectorAll('li').length;
@@ -152,7 +169,7 @@ function updateCounter(): void {
 }
 
 // -----------------------------
-// Збереження в localStorage
+//Save to localStorage
 // -----------------------------
 function saveToLocalStorage(): void {
   const items: ShoppingItem[] = Array.from(ul.querySelectorAll('li')).map(li => {
@@ -163,8 +180,9 @@ function saveToLocalStorage(): void {
   localStorage.setItem('shoppingList', JSON.stringify(items));
 }
 
+
 // -----------------------------
-// Футер
+//Footer
 // -----------------------------
 const p = document.createElement('p');
 p.className = 'date';

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc -w",
-     "postbuild": "cp src/js/index.js public/index.js && cp src/main.css public/main.css"
+    "postbuild": "cp src/js/index.js public/index.js && cp src/main.css public/main.css"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,10 @@
   "homepage": "https://github.com/arnmary/shoping_list#readme",
   "dependencies": {
     "@types/node": "^24.0.3",
+    "@vercel/frameworks": "^3.7.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "glob": "^7.2.3",
     "readline-sync": "^1.4.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
@@ -30,6 +32,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@vercel/node": "^5.3.4"
+    "@vercel/node": "^2.3.0",
+    "@vercel/routing-utils": "^5.1.1"
   }
 }

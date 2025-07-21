@@ -7,7 +7,7 @@ type WordsData = {
 
 type LangCode = 'uk' | 'ru' | 'en' | 'pl';
 
-// Приведемо імпортовані дані до типу WordsData
+//  Cast import data  to type WordsData
 const typedWordsData: WordsData = wordsData;
 
 export default function handler(req: VercelRequest, res: VercelResponse) {

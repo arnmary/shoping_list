@@ -2,35 +2,35 @@ interface WordsData {
   [key: string]: string[];
 }
 
-// Імпортуємо необхідні модулі
-import express from "express"; // Express — фреймворк для створення сервера
-import cors from "cors";       // CORS — для дозволу запитів з інших доменів (наприклад, з клієнта)
-import wordsDataJson from "../data/words.json"; // Імпортуємо JSON з підказками на різних мовах
+// Import modules
+import express from "express"; // Express — for creating server
+import cors from "cors";       // CORS — for to allow requests from others domains (from a client)
+import wordsDataJson from "../data/words.json"; // Import JSON with hints in different languages 
 const wordsData = wordsDataJson as WordsData;
 
-// Ініціалізуємо додаток Express
+//Initializing app Express
 const app = express();
-const port = 3000; // Порт, на якому працюватиме сервер
+const port = 3000; // Port, the server will run
 
-// Дозволяємо крос-доменні запити
+//  Add cros-domain request
 app.use(cors());
 
 /**
- * Роут для обробки автопідказок.
- * Очікує query — текст запиту, lang — мову (наприклад, 'uk', 'en', 'pl', 'ru')
+ * Router for processing auto prompts
+ * Waiting query — text of the request, lang (for example, 'uk', 'en', 'pl', 'ru')
  */
 app.get("/api/suggestions", (req, res) => {
-  const query = (req.query.query as string)?.toLowerCase() || ""; // Запит від користувача
-  const lang = (req.query.lang as string) || "uk";                // Мова запиту (за замовчуванням — українська)
+  const query = (req.query.query as string)?.toLowerCase() || ""; // Request from user
+  const lang = (req.query.lang as string) || "uk";                // Language for the query (default- ukrainian)
 
-  const langWords = wordsData[lang] || []; // Отримуємо список слів для обраної мови
-  // Фільтруємо слова, які починаються з введеного тексту
+  const langWords = wordsData[lang] || []; //  Waiting list the words for chosen language
+  // Filfer worlds
   const result = langWords.filter((word: string) => word.toLowerCase().startsWith(query));
 
-  res.json(result); // Повертаємо результат як JSON
+  res.json(result); // Return result as JSON
 });
 
-// Запускаємо сервер і логуємо повідомлення
+//  Start the server and log messages
 app.listen(port, () => {
   console.log(`✅ Server started at http://localhost:${port}`);
 });

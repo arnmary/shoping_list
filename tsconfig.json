@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2020",                       // Краще, ніж ES6, для сучасного Node
+    "target": "ES2020",                       // Better, than ES6, for Node
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["DOM", "ES2020"],                // Оновлений стандарт бібліотек
+    "lib": ["DOM", "ES2020"],                // Updated library standart
     "outDir": "public/dist",
     "sourceMap": true,
     "removeComments": true,
@@ -12,12 +12,15 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
+     "types": ["node"],
+     "skipLibCheck": true
+
              
   },
   "include": [
-    "./src/**/*",                            // Код проекту
+    "./src/**/*",                            // Project's cod
     "./api/**/*",
-  "./data/**/*",                           // 👈 Додати директорію з Vercel Functions
+  "./data/**/*",                           // 👈 Add the directory with Vercel Functions
   "public/index.ts", "public/server.ts"  ],
 
   "exclude": ["node_modules"]
