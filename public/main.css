@@ -135,7 +135,7 @@ margin: 0 1.87rem 3.06rem 1.43rem;
 .suggestionItem:hover {
   background-color: #eee;
 }
-.shopingItem{
+.shoppingItem{
     width: 80%;
     padding: 0.1rem;
     margin: 1rem auto;
@@ -145,7 +145,7 @@ margin: 0 1.87rem 3.06rem 1.43rem;
     justify-content: space-between;
 }
 
-.shopingItem.done {
+.shoppingItem.done {
   text-decoration: line-through;
   opacity: 0.6;
 }
