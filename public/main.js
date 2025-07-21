@@ -4,10 +4,11 @@ const input = document.getElementById('actionInput');
 const countButton = document.querySelector('.count');
 const listSection = document.querySelector('.list');
 const langSelect = document.getElementById('langSelect');
-const suggestionsContainer = document.getElementById('suggestions');
-const footerTitle = document.querySelector('.footerTitle');
+const suggestionsContainer = document.createElement('ul');
+suggestionsContainer.className = 'suggestionsList';
+input.parentElement.appendChild(suggestionsContainer);
 const ul = document.createElement('ul');
-ul.className = 'shoppingList';
+ul.className = 'shopingList';
 listSection.appendChild(ul);
 const savedItems = JSON.parse(localStorage.getItem('shoppingList') || '[]');
 savedItems.forEach(item => addItem(item.title, false, item.done));
@@ -63,7 +64,7 @@ form.addEventListener('submit', event => {
 });
 function addItem(title, save, done = false) {
     const li = document.createElement('li');
-    li.className = 'shoppingItem';
+    li.className = 'shopingItem';
     if (done)
         li.classList.add('done');
     const numberBtn = document.createElement('button');
@@ -102,18 +103,6 @@ function updateAllNumbers() {
         numberBtn.textContent = (index + 1).toString();
     });
 }
-const clearButton = document.getElementById('clearButton');
-if (clearButton) {
-    clearButton.addEventListener('click', () => {
-        ul.innerHTML = '';
-        localStorage.removeItem('shoppingList');
-        updateCounter();
-        suggestionsContainer.innerHTML = '';
-    });
-}
-else {
-    console.warn('❗ clearButton not found in the DOM');
-}
 function updateCounter() {
     const totalItems = ul.querySelectorAll('li').length;
     countButton.textContent = totalItems.toString();
@@ -126,6 +115,7 @@ function saveToLocalStorage() {
     });
     localStorage.setItem('shoppingList', JSON.stringify(items));
 }
+const footerTitle = document.querySelector('.footerTitle');
 const p = document.createElement('p');
 p.className = 'date';
 p.textContent = `© ${new Date().getFullYear()} Created by Maryna Arnaut`;
